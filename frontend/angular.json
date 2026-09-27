@@ -50,6 +50,9 @@
           "options": {
             "proxyConfig": "proxy.conf.json"
           }
+        },
+        "deploy": {
+          "builder": "angular-cli-ghpages:deploy"
         }
       }
     }
