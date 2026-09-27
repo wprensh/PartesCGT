@@ -20,8 +20,12 @@ public static class AuthSetup
     public static IServiceCollection AddAdminAuth(this IServiceCollection services, IConfiguration configuration, IHostEnvironment environment)
     {
         services.Configure<AdminOptions>(configuration.GetSection(AdminOptions.SectionName));
-        services.Configure<JwtOptions>(configuration.GetSection(JwtOptions.SectionName));
-        services.PostConfigure<JwtOptions>(jwt => EnsureSigningKey(jwt, environment));
+        // ValidateOnStart: sin una clave válida la API no arranca (el despliegue falla con el motivo en el log),
+        // en vez de arrancar y responder 500 en cada petición con sesión.
+        services.AddOptions<JwtOptions>()
+            .Bind(configuration.GetSection(JwtOptions.SectionName))
+            .PostConfigure(jwt => EnsureSigningKey(jwt, environment))
+            .ValidateOnStart();
 
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer();
         services.AddOptions<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme)
@@ -90,7 +94,9 @@ public static class AuthSetup
     {
         if (Encoding.UTF8.GetByteCount(jwt.Key) >= JwtOptions.MinKeyBytes) return;
         if (!environment.IsDevelopment())
-            throw new InvalidOperationException($"Jwt:Key debe tener al menos {JwtOptions.MinKeyBytes} caracteres.");
+            throw new InvalidOperationException(
+                $"Jwt:Key debe tener al menos {JwtOptions.MinKeyBytes} caracteres. " +
+                "Configúrala como secreto (en Render: variable de entorno Jwt__Key).");
         jwt.Key = Convert.ToBase64String(RandomNumberGenerator.GetBytes(48));
     }
 }
