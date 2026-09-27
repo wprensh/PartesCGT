@@ -21,6 +21,15 @@
 **/obj
 **/secrets.dev.yaml
 **/values.dev.yaml
+# Datos locales: bases SQLite e imágenes subidas no van a la imagen.
+**/*.db
+**/*.db-shm
+**/*.db-wal
+**/App_Data
+# Pruebas y herramientas: no se necesitan para ejecutar la API.
+TiendaVirtual.Api.Tests
+tools
+postman
 LICENSE
 README.md
 !**/.gitignore

@@ -1,0 +1,45 @@
+# Blueprint de Render: https://render.com/docs/blueprint-spec
+# En Render: New > Blueprint > elige este repositorio. Los valores con "sync: false" los pide Render
+# al crear el servicio (son secretos: nunca los escribas en este archivo, el repositorio es público).
+services:
+  - type: web
+    name: partes-ctg-api
+    runtime: docker
+    plan: free
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    # Solo se vuelve a desplegar cuando cambia el backend.
+    buildFilter:
+      paths:
+        - backend/**
+    healthCheckPath: /api/health
+    envVars:
+      # La imagen escucha en 8080; PORT le indica a Render a qué puerto enviar el tráfico.
+      - key: PORT
+        value: "8080"
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      # IP real del cliente detrás del proxy de Render (límite de intentos por cliente).
+      - key: ReverseProxy__Enabled
+        value: "true"
+      # Base de datos: Azure SQL (SQL Server). Las migraciones se aplican solas al arrancar.
+      - key: Database__Provider
+        value: SqlServer
+      - key: ConnectionStrings__Default
+        sync: false
+      # Clave para firmar los JWT: Render genera una aleatoria.
+      - key: Jwt__Key
+        generateValue: true
+      # Primer administrador: solo se usa si no hay usuarios. Después puedes borrar estas dos variables.
+      - key: Admin__Email
+        sync: false
+      - key: Admin__Password
+        sync: false
+      # Imágenes en Azure Blob Storage: el disco de Render se borra en cada despliegue.
+      - key: Storage__Provider
+        value: AzureBlob
+      - key: Storage__AzureBlob__ConnectionString
+        sync: false
+      # Asistente (opcional): déjalo vacío si no usas Claude.
+      - key: Claude__ApiKey
+        sync: false

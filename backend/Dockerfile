@@ -1,29 +1,31 @@
-# Consulte https://aka.ms/customizecontainer para aprender a personalizar su contenedor de depuración y cómo Visual Studio usa este Dockerfile para compilar sus imágenes para una depuración más rápida.
+# API de la tienda en contenedor Linux. Contexto de build: la carpeta backend/
+#   docker build -t tienda-api backend
+# En Render: Root Directory = backend (ver render.yaml en la raíz del repositorio).
 
-# Esta fase se usa cuando se ejecuta desde VS en modo rápido (valor predeterminado para la configuración de depuración)
+# ---------- Ejecución: imagen liviana, usuario sin privilegios ----------
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
-USER $APP_UID
 WORKDIR /app
+# Carpeta para imágenes cuando Storage:Provider = Local (con Azure Blob no se usa).
+RUN mkdir -p /app/App_Data/files && chown -R $APP_UID:$APP_UID /app/App_Data
+USER $APP_UID
+ENV ASPNETCORE_HTTP_PORTS=8080
 EXPOSE 8080
 
-
-# Esta fase se usa para compilar el proyecto de servicio
+# ---------- Compilación ----------
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["TiendaVirtual.Api.csproj", "."]
-RUN dotnet restore "./TiendaVirtual.Api.csproj"
-COPY . .
-WORKDIR "/src/."
-RUN dotnet build "./TiendaVirtual.Api.csproj" -c $BUILD_CONFIGURATION -o /app/build
+# Primero solo el .csproj: la restauración queda en caché mientras no cambien los paquetes.
+COPY ["TiendaVirtual.Api/TiendaVirtual.Api.csproj", "TiendaVirtual.Api/"]
+RUN dotnet restore "TiendaVirtual.Api/TiendaVirtual.Api.csproj"
+# .editorconfig: excepciones de los analizadores (el proyecto trata los avisos como errores).
+COPY [".editorconfig", "./"]
+COPY ["TiendaVirtual.Api/", "TiendaVirtual.Api/"]
+RUN dotnet publish "TiendaVirtual.Api/TiendaVirtual.Api.csproj" -c $BUILD_CONFIGURATION -o /app/publish \
+    --no-restore /p:UseAppHost=false
 
-# Esta fase se usa para publicar el proyecto de servicio que se copiará en la fase final.
-FROM build AS publish
-ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./TiendaVirtual.Api.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
-
-# Esta fase se usa en producción o cuando se ejecuta desde VS en modo normal (valor predeterminado cuando no se usa la configuración de depuración)
+# ---------- Imagen final ----------
 FROM base AS final
 WORKDIR /app
-COPY --from=publish /app/publish .
+COPY --from=build /app/publish .
 ENTRYPOINT ["dotnet", "TiendaVirtual.Api.dll"]

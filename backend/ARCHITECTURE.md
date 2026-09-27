@@ -70,13 +70,30 @@ endpoints aparte del producto (`/api/products/{id}/suppliers`). Un proveedor que
   Guardar binarios en SQL Server la engorda y hace más lentos los respaldos.
 - `POST /api/products/images` (admin) recibe JPG/PNG/WebP de hasta 2 MB. El formato se detecta **por el
   contenido** (`ImageFormat`), no por la extensión. Se guarda con nombre aleatorio vía `IFileStorage`.
-- `LocalFileStorage` escribe en `Storage:RootPath` (por defecto `App_Data/files`, fuera del repositorio) y lo
-  sirve en `/api/files/...` con `X-Content-Type-Options: nosniff` y caché larga (los nombres nunca se repiten).
-  Solo reconoce URL con el formato exacto que genera, así que no sirve para leer ni borrar otros archivos.
+- `Storage:Provider` elige el almacén:
+  - `Local` (por defecto): `LocalFileStorage` escribe en `Storage:RootPath` (`App_Data/files`, fuera del repositorio).
+    Al desplegar, esa carpeta debe persistir entre versiones.
+  - `AzureBlob`: `AzureBlobFileStorage` guarda en un contenedor **privado** (`Storage:AzureBlob:Container`, se crea
+    al arrancar) con la cadena `Storage:AzureBlob:ConnectionString` (secreta: user-secrets o variable de entorno).
+- En ambos casos las URL son `/api/files/{carpeta}/{guid}.{ext}` (`StoredFileUrl`) y la API las sirve con
+  `X-Content-Type-Options: nosniff` y caché larga (los nombres nunca se repiten). Cambiar de almacén no cambia
+  las URL guardadas en la base (hay que copiar los archivos). Solo se reconoce ese formato exacto, así que no
+  sirve para leer ni borrar otros archivos.
+- El proveedor se elige al **resolver** el servicio, no al registrarlo: las pruebas fuerzan `Local` en una carpeta
+  temporal y nunca usan el almacén real.
 - `ImageUrl` acepta solo imágenes subidas o URL `http(s)` absolutas (`ProductImage.IsExternalUrl`).
 - Al reemplazar la imagen o borrar el producto, el archivo anterior se borra si ningún otro producto lo usa.
-- Para producción: otra implementación de `IFileStorage` (Azure Blob, S3) y registrarla en `StorageSetup`.
-  Hoy, al desplegar, la carpeta `App_Data/files` debe persistir entre versiones y entrar en los respaldos.
+
+## Despliegue (Docker y Render)
+
+- `backend/Dockerfile` (contexto: `backend/`): compila con `sdk:9.0` y ejecuta con `aspnet:9.0` como usuario sin
+  privilegios, en el puerto 8080. Copia `.editorconfig` porque los avisos del analizador son errores.
+- `render.yaml` (raíz del repositorio) define el servicio de Render. Los secretos (`ConnectionStrings__Default`,
+  `Admin__*`, `Storage__AzureBlob__ConnectionString`, `Claude__ApiKey`) se cargan en Render; `Jwt__Key` la genera Render.
+- `ReverseProxy:Enabled` (activado en Render) toma la IP del cliente de `X-Forwarded-For`, para que el límite de
+  intentos sea por cliente. Apagado por defecto: sin proxy, cualquiera podría falsear esa cabecera.
+  `ReverseProxy:ForwardLimit` (1) es cuántos proxies hay delante de la API.
+- `GET /api/health`: chequeo de Render. Solo indica que el proceso responde; no consulta la base.
 
 ## Flujo de una petición
 

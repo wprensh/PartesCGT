@@ -21,6 +21,7 @@ builder.Services
 
 var app = builder.Build();
 
+app.UseReverseProxyHeaders();
 await app.InitializeDatabaseAsync();
 await app.EnsureInitialAdminAsync();
 app.UseFileStorage();

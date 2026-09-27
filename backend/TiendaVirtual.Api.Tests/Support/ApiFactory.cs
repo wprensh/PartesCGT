@@ -15,8 +15,11 @@ namespace TiendaVirtual.Api.Tests.Support;
 /// No usa user-secrets, no llama a Claude y NUNCA toca la base real: el DbContext se reemplaza explícitamente
 /// (ver <see cref="ApiIsolationTests"/>).
 /// </summary>
-public sealed class ApiFactory : WebApplicationFactory<Program>
+public class ApiFactory : WebApplicationFactory<Program>
 {
+    /// <summary>Ajustes extra de una variante (se aplican después de los de base).</summary>
+    protected virtual IEnumerable<KeyValuePair<string, string?>> ExtraSettings => [];
+
     public const string AdminEmail = "admin@tienda.local";
     /// <summary>Cumple la política (10+ caracteres, letras y números): el primer admin se crea con ella.</summary>
     public const string AdminPassword = "clave-de-prueba-2026";
@@ -33,14 +36,17 @@ public sealed class ApiFactory : WebApplicationFactory<Program>
         {
             ["ConnectionStrings:Default"] = ConnectionString,
             ["Database:Provider"] = "Sqlite",
+            // Siempre en disco temporal: nunca el Azure Blob real aunque haya variables de entorno.
+            ["Storage:Provider"] = "Local",
             ["Storage:RootPath"] = _filesPath,
+            ["ReverseProxy:Enabled"] = "false",
             // Las pruebas inician sesión muchas veces seguidas desde la misma "IP".
             ["RateLimiting:login"] = "1000",
             ["Admin:Email"] = AdminEmail,
             ["Admin:Password"] = AdminPassword,
             ["Jwt:Key"] = new string('k', 48),
             ["Claude:ApiKey"] = ""
-        }));
+        }).AddInMemoryCollection(ExtraSettings));
 
         // Segunda barrera: se quita la configuración de base de la app y se registra solo SQLite temporal.
         builder.ConfigureTestServices(services =>
