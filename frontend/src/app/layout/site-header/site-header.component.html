@@ -1,0 +1,19 @@
+<header class="top">
+  <div class="container bar">
+    <a routerLink="/" class="brand">Partes<span>CTG</span></a>
+
+    @if (adminMode()) {
+      <a routerLink="/" class="nav-link push-right">Ver tienda</a>
+    } @else {
+      <nav class="main-nav" aria-label="Principal">
+        <app-category-menu (askAssistant)="assistant.ask()" />
+        <a routerLink="/" fragment="kits" class="nav-link kits-link">Kits</a>
+      </nav>
+      <a routerLink="/carrito" class="nav-link push-right" [attr.aria-label]="'Carrito, ' + cart.count() + ' productos'">
+        <app-icon name="shopping_cart" />
+        <span class="cart-label">Carrito</span>
+        @if (cart.count() > 0) { <b class="badge">{{ cart.count() }}</b> }
+      </a>
+    }
+  </div>
+</header>

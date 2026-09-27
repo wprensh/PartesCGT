@@ -1,0 +1,83 @@
+<dialog #dialog aria-labelledby="supplier-dialog-title">
+  <form [formGroup]="form" (ngSubmit)="save()" class="dlg">
+    <h2 id="supplier-dialog-title">
+      {{ readOnly() ? 'Proveedor' : editingId() ? 'Editar proveedor' : 'Nuevo proveedor' }}
+    </h2>
+
+    <div class="row">
+      <label class="field">Razón social
+        <input formControlName="name" maxlength="150" autocomplete="organization">
+      </label>
+      <label class="field">NIT
+        <input formControlName="taxId" maxlength="20" placeholder="900123456-7">
+      </label>
+    </div>
+    <div class="row">
+      <label class="field">Contacto
+        <input formControlName="contactName" maxlength="120" autocomplete="name">
+      </label>
+      <label class="field">Teléfono
+        <input formControlName="phone" type="tel" maxlength="40" autocomplete="tel">
+      </label>
+    </div>
+    <div class="row">
+      <label class="field">Correo
+        <input formControlName="email" type="email" maxlength="254" autocomplete="email">
+      </label>
+      <label class="field">Ciudad
+        <input formControlName="city" maxlength="80" autocomplete="address-level2">
+      </label>
+    </div>
+    <label class="field">Dirección
+      <input formControlName="address" maxlength="200" autocomplete="street-address">
+    </label>
+    <label class="field">Notas
+      <textarea formControlName="notes" maxlength="1000" placeholder="Condiciones de pago, tiempos de entrega…"></textarea>
+    </label>
+    <label class="check">
+      <input type="checkbox" formControlName="isActive"> Activo (se puede asignar a productos)
+    </label>
+
+    @if (editingId()) {
+      <section class="supplied" aria-labelledby="supplied-title">
+        <h3 id="supplied-title">Productos que surte</h3>
+        @if (products(); as list) {
+          @if (list.length) {
+            <table class="table compact-table">
+              <thead><tr><th>Producto</th><th class="num">Costo</th><th class="num">Precio</th><th class="num">Margen</th></tr></thead>
+              <tbody>
+                @for (p of list; track p.productId) {
+                  <tr>
+                    <td>{{ p.productName }}@if (p.isPreferred) { <span class="pill on">Preferido</span> }
+                      @if (p.supplierSku) { <small class="sub">Código: {{ p.supplierSku }}</small> }</td>
+                    <td class="num">{{ p.cost | cop }}</td>
+                    <td class="num">{{ p.price | cop }}</td>
+                    <td class="num" [class.negative]="(margin(p.price, p.cost) ?? 0) < 0">{{ margin(p.price, p.cost) | percent:'1.0-1' }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          } @else {
+            <p class="muted">Todavía no surte ningún producto. Asígnalo desde el formulario del producto.</p>
+          }
+        } @else {
+          <p class="muted">Cargando…</p>
+        }
+      </section>
+    }
+
+    @if (form.touched && form.invalid) {
+      <p class="error">Revisa los campos: la razón social y el NIT son obligatorios, y el correo debe ser válido.</p>
+    }
+    @if (error()) { <p class="error" role="alert">{{ error() }}</p> }
+
+    <div class="buttons">
+      <button type="button" class="btn btn-ghost" (click)="close()">{{ readOnly() ? 'Cerrar' : 'Cancelar' }}</button>
+      @if (!readOnly()) {
+        <button class="btn" [disabled]="saving()">
+          {{ saving() ? 'Guardando…' : (editingId() ? 'Guardar cambios' : 'Crear proveedor') }}
+        </button>
+      }
+    </div>
+  </form>
+</dialog>

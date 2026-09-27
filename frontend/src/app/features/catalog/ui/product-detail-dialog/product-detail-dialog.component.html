@@ -1,0 +1,59 @@
+@let p = product;
+<button type="button" class="close" mat-dialog-close aria-label="Cerrar detalle">
+  <app-icon name="close" />
+</button>
+
+<mat-dialog-content class="detail">
+  <div class="media" [class.empty]="!imageSrc()">
+    @if (imageSrc(); as src) {
+      <img [src]="src" [alt]="p.name" decoding="async" (error)="failed.set(true)">
+    } @else {
+      <span class="placeholder" aria-hidden="true">{{ code }}</span>
+    }
+  </div>
+
+  <div class="info">
+    <p class="meta">
+      <span class="code-tag" aria-hidden="true">{{ code }}</span>
+      <span>{{ path }}</span>
+      <span class="sku">{{ sku }}</span>
+    </p>
+    @if (p.brand) { <p class="brand">{{ p.brand }}</p> }
+    <h2 mat-dialog-title>{{ p.name }}</h2>
+
+    @if (p.rating !== null) {
+      <p class="rating" [attr.aria-label]="'Calificación ' + (p.rating | number:'1.1-1') + ' de 5, ' + p.reviewCount + ' reseñas'">
+        <app-icon name="star" filled />
+        <b aria-hidden="true">{{ p.rating | number:'1.1-1' }}</b>
+        <span aria-hidden="true">· {{ p.reviewCount }} {{ p.reviewCount === 1 ? 'reseña' : 'reseñas' }}</span>
+      </p>
+    }
+
+    <p class="price">{{ p.price | cop }}</p>
+    @switch (stock) {
+      @case ('out') { <p class="stock out">Agotado</p> }
+      @case ('low') { <p class="stock low">¡Últimas {{ p.stock }} unidades!</p> }
+      @default { <p class="stock">En stock · {{ p.stock }} disponibles</p> }
+    }
+
+    <p class="description">{{ p.description }}</p>
+  </div>
+
+  @if (p.attributes.length) {
+    <section class="specs" aria-labelledby="specs-title">
+      <h3 id="specs-title">Especificaciones</h3>
+      <dl>
+        @for (a of p.attributes; track a.name) {
+          <div><dt>{{ a.name }}</dt><dd>{{ a.value }}</dd></div>
+        }
+      </dl>
+    </section>
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button type="button" class="btn btn-ghost" mat-dialog-close>Seguir viendo</button>
+  <button type="button" class="btn" (click)="addToCart()" [disabled]="stock === 'out'">
+    <app-icon name="add_shopping_cart" />{{ stock === 'out' ? 'Agotado' : 'Agregar al carrito' }}
+  </button>
+</mat-dialog-actions>

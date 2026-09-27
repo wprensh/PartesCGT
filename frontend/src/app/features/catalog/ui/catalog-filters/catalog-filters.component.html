@@ -1,0 +1,126 @@
+<div class="head">
+  <h2>Filtros</h2>
+  @if (activeCount()) {
+    <button type="button" class="btn-link" (click)="clear()">Limpiar ({{ activeCount() }})</button>
+  }
+  <button type="button" class="close" (click)="closed.emit()" aria-label="Cerrar filtros">
+    <app-icon name="close" />
+  </button>
+</div>
+
+<!-- Categoría y subcategoría: navegan por URL (?categoria=), igual que el menú superior -->
+<details open>
+  <summary>Categoría</summary>
+  <nav aria-label="Categorías del catálogo">
+    @if (parent(); as p) {
+      <a class="back" [routerLink]="[]" [queryParams]="category()?.parentId ? { categoria: p.slug } : {}">
+        <app-icon name="chevron_left" />
+        {{ category()?.parentId ? p.name : 'Todas las categorías' }}
+      </a>
+      <p class="current">{{ p.name }}</p>
+      <ul class="links">
+        @for (c of categories.childrenOf(p.id); track c.id) {
+          <li>
+            <a [routerLink]="[]" [queryParams]="{ categoria: c.slug }" [class.on]="c.id === category()?.id"
+               [attr.aria-current]="c.id === category()?.id ? 'true' : null">
+              {{ c.name }}<span class="count">{{ c.activeProducts }}</span>
+            </a>
+          </li>
+        } @empty {
+          <li class="muted">Sin subcategorías</li>
+        }
+      </ul>
+    } @else {
+      <ul class="links">
+        @for (c of categories.mainCategories(); track c.id) {
+          <li><a [routerLink]="[]" [queryParams]="{ categoria: c.slug }">{{ c.name }}<span class="count">{{ c.activeProducts }}</span></a></li>
+        }
+      </ul>
+    }
+  </nav>
+</details>
+
+<details open>
+  <summary>Precio</summary>
+  <div class="price">
+    <label>Mínimo
+      <input type="number" inputmode="numeric" min="0" step="1000" [value]="filters().minPrice ?? ''"
+             [placeholder]="facets().price?.min ?? 0" (change)="setPrice('minPrice', $event)">
+    </label>
+    <label>Máximo
+      <input type="number" inputmode="numeric" min="0" step="1000" [value]="filters().maxPrice ?? ''"
+             [placeholder]="facets().price?.max ?? ''" (change)="setPrice('maxPrice', $event)">
+    </label>
+  </div>
+  @if (facets().price; as range) {
+    <small class="muted">Entre {{ range.min | cop }} y {{ range.max | cop }}</small>
+  }
+</details>
+
+@if (facets().brands.length) {
+  <details open>
+    <summary>Marca</summary>
+    <ul class="options">
+      @for (o of facets().brands; track o.value) {
+        @let on = filters().brands.includes(o.value);
+        <li>
+          <label [class.off]="!o.count && !on">
+            <input type="checkbox" [checked]="on" [disabled]="!o.count && !on" (change)="toggleBrand(o.value)">
+            <span>{{ o.value }}</span><span class="count">{{ o.count }}</span>
+          </label>
+        </li>
+      }
+    </ul>
+  </details>
+}
+
+<!-- Atributos físicos: salen de los atributos cargados en el panel de administración -->
+@for (group of facets().attributes; track group.name; let i = $index) {
+  <details [open]="i < 3 || isAttributeSelected(group.name)">
+    <summary>{{ group.name }}</summary>
+    <ul class="options">
+      @for (o of group.options; track o.value) {
+        @let on = isAttributeSelected(group.name, o.value);
+        <li>
+          <label [class.off]="!o.count && !on">
+            <input type="checkbox" [checked]="on" [disabled]="!o.count && !on" (change)="toggleAttribute(group.name, o.value)">
+            <span>{{ o.value }}</span><span class="count">{{ o.count }}</span>
+          </label>
+        </li>
+      }
+    </ul>
+  </details>
+}
+
+<details open>
+  <summary>Disponibilidad</summary>
+  <label class="single">
+    <input type="checkbox" [checked]="filters().inStockOnly" (change)="patch({ inStockOnly: !filters().inStockOnly })">
+    <span>Solo disponibles</span><span class="count">{{ facets().inStock }}</span>
+  </label>
+</details>
+
+<details open>
+  <summary>Valoración</summary>
+  <div role="radiogroup" aria-label="Calificación mínima" class="options">
+    @for (r of facets().ratings; track r.min) {
+      @let on = filters().minRating === r.min;
+      <label [class.off]="!r.count && !on">
+        <input type="radio" name="minRating" [checked]="on" [disabled]="!r.count && !on" (change)="patch({ minRating: r.min })">
+        <span class="stars" [attr.aria-label]="r.min + ' estrellas o más'">
+          @for (s of [1, 2, 3, 4, 5]; track s) { <app-icon name="star" [filled]="s <= r.min" /> }
+          <span aria-hidden="true">o más</span>
+        </span>
+        <span class="count">{{ r.count }}</span>
+      </label>
+    }
+    <label>
+      <input type="radio" name="minRating" [checked]="filters().minRating === null" (change)="patch({ minRating: null })">
+      <span>Cualquiera</span>
+    </label>
+  </div>
+</details>
+
+<div class="foot">
+  <button type="button" class="btn" (click)="closed.emit()">{{ resultsLabel() }}</button>
+</div>

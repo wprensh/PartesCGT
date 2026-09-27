@@ -1,0 +1,44 @@
+<dialog #dialog aria-labelledby="role-dialog-title">
+  <form [formGroup]="form" (ngSubmit)="save()" class="dlg">
+    <h2 id="role-dialog-title">{{ editing() ? 'Editar rol' : 'Nuevo rol' }}</h2>
+
+    <label class="field">Nombre
+      <input formControlName="name" maxlength="60" placeholder="Ventas">
+    </label>
+    <label class="field">Descripción
+      <input formControlName="description" maxlength="200" placeholder="Qué hace este rol">
+    </label>
+
+    <fieldset class="permissions">
+      <legend>Permisos</legend>
+      @if (editing()?.isSystem) {
+        <p class="notice">Administrador es el rol del sistema: siempre tiene todos los permisos, también los que se agreguen después.</p>
+      } @else {
+        <small class="muted">"Crear, editar y eliminar" incluye "Ver". Los cambios aplican de inmediato a los usuarios del rol.</small>
+      }
+      @for (module of modules(); track module.name) {
+        <div class="module">
+          <span class="module-name">{{ module.name }}</span>
+          <div class="options">
+            @for (p of module.permissions; track p.code) {
+              <label class="check" [class.locked]="isLocked(p.code)">
+                <input type="checkbox" [checked]="effective().has(p.code)" [disabled]="isLocked(p.code)" (change)="toggle(p.code)">
+                {{ p.label }}
+              </label>
+            }
+          </div>
+        </div>
+      }
+    </fieldset>
+
+    @if (form.touched && form.invalid) { <p class="error">El nombre del rol debe tener entre 3 y 60 caracteres.</p> }
+    @if (error()) { <p class="error" role="alert">{{ error() }}</p> }
+
+    <div class="buttons">
+      <button type="button" class="btn btn-ghost" (click)="close()">Cancelar</button>
+      <button class="btn" [disabled]="saving()">
+        {{ saving() ? 'Guardando…' : (editing() ? 'Guardar cambios' : 'Crear rol') }}
+      </button>
+    </div>
+  </form>
+</dialog>

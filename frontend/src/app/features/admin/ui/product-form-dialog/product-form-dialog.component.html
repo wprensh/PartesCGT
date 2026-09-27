@@ -1,0 +1,116 @@
+<dialog #dialog aria-labelledby="product-dialog-title">
+  <form [formGroup]="form" (ngSubmit)="save()" class="dlg">
+    <h2 id="product-dialog-title">{{ readOnly() ? 'Producto' : editingId() ? 'Editar producto' : 'Nuevo producto' }}</h2>
+    @if (readOnly()) {
+      <p class="notice">Solo lectura: tu rol no permite modificar productos.@if (canManageSuppliers()) { Sí puedes editar sus proveedores y costos. }</p>
+    }
+
+    <label class="field">Nombre
+      <input formControlName="name" maxlength="150">
+    </label>
+    <label class="field">Descripción
+      <textarea formControlName="description" maxlength="1000"></textarea>
+      <small>El asistente usa este texto para recomendar el producto: incluye compatibilidades y especificaciones clave.</small>
+    </label>
+
+    <div class="row">
+      <label class="field">Marca
+        <input formControlName="brand" maxlength="60" list="brand-list" placeholder="Kingston">
+      </label>
+      <label class="field">Categoría
+        <select formControlName="categoryId">
+          <option [ngValue]="0" disabled>Selecciona una categoría</option>
+          @for (o of options(); track o.id) { <option [ngValue]="o.id">{{ o.label }}</option> }
+        </select>
+      </label>
+    </div>
+    <datalist id="brand-list">@for (b of brands(); track b) { <option [value]="b"></option> }</datalist>
+
+    <fieldset class="attrs" formArrayName="attributes">
+      <legend>Atributos</legend>
+      <small>Aparecen como filtros en la tienda. Usa siempre el mismo nombre: Capacidad, Formato, Socket, Peso…</small>
+      @for (group of attributes.controls; track group; let i = $index) {
+        <div class="attr" [formGroupName]="i">
+          <input formControlName="name" placeholder="Capacidad" aria-label="Nombre del atributo" maxlength="60" list="attr-names">
+          <input formControlName="value" placeholder="16 GB" aria-label="Valor del atributo" maxlength="80">
+          @if (!readOnly()) {
+            <button type="button" class="btn-danger" (click)="attributes.removeAt(i)" [attr.aria-label]="'Quitar atributo ' + (i + 1)">Quitar</button>
+          }
+        </div>
+      }
+      @if (!readOnly()) {
+        <button type="button" class="btn-link add" (click)="addAttribute()" [disabled]="attributes.length >= maxAttributes">
+          + Agregar atributo
+        </button>
+      }
+    </fieldset>
+    <datalist id="attr-names">@for (n of attributeNames(); track n) { <option [value]="n"></option> }</datalist>
+
+    <fieldset class="image">
+      <legend>Imagen</legend>
+      <div class="image-row">
+        <div class="preview" [class.empty]="!imagePreview()">
+          @if (imagePreview(); as src) {
+            <img [src]="src" alt="Vista previa de la imagen del producto"
+                 (error)="imageError.set('No se pudo cargar esa imagen. Revisa la URL.')">
+          } @else {
+            <span>Sin imagen</span>
+          }
+        </div>
+        <div class="image-controls">
+          @if (!readOnly()) {
+            <!-- El input real queda oculto visualmente pero sigue siendo accesible con teclado. -->
+            <label class="btn btn-ghost upload" [class.busy]="uploading()">
+              <app-icon name="upload" />{{ uploading() ? 'Subiendo…' : 'Subir imagen' }}
+              <input class="visually-hidden" type="file" [accept]="acceptedImageTypes"
+                     [disabled]="uploading()" (change)="uploadImage($event)">
+            </label>
+          }
+          <input formControlName="imageUrl" type="url" inputmode="url" maxlength="500"
+                 placeholder="…o pega una URL https://" aria-label="URL de la imagen">
+          @if (form.controls.imageUrl.value && !readOnly()) {
+            <button type="button" class="btn-link remove" (click)="clearImage()">Quitar imagen</button>
+          }
+        </div>
+      </div>
+      <small>JPG, PNG o WebP de hasta 2 MB. Se ve mejor en 4:3 y con fondo blanco.</small>
+      @if (imageError()) { <p class="error" role="alert">{{ imageError() }}</p> }
+    </fieldset>
+
+    <div class="row">
+      <label class="field">Precio (COP)
+        <input formControlName="price" type="number" min="0" step="1000" inputmode="numeric">
+      </label>
+      <label class="field">Stock
+        <input formControlName="stock" type="number" min="0" step="1" inputmode="numeric">
+      </label>
+    </div>
+    <label class="check">
+      <input type="checkbox" formControlName="isActive"> Visible en la tienda
+    </label>
+
+    @if (canViewSuppliers()) {
+      @if (suppliersLoading()) {
+        <p class="muted">Cargando proveedores…</p>
+      } @else {
+        <app-product-suppliers-editor [suppliers]="allSuppliers()" [price]="currentPrice()"
+                                      [readOnly]="!canManageSuppliers()" [(offers)]="offers" />
+      }
+    }
+
+    @if (form.touched && form.invalid && !readOnly()) {
+      <p class="error">Revisa los campos: el nombre necesita al menos 3 caracteres, la descripción 10,
+        precio y stock no pueden ser negativos, y cada atributo necesita nombre y valor.</p>
+    }
+    @if (error()) { <p class="error" role="alert">{{ error() }}</p> }
+
+    <div class="buttons">
+      <button type="button" class="btn btn-ghost" (click)="close()">{{ canSave() ? 'Cancelar' : 'Cerrar' }}</button>
+      @if (canSave()) {
+        <button class="btn" [disabled]="saving()">
+          {{ saving() ? 'Guardando…' : readOnly() ? 'Guardar proveedores' : editingId() ? 'Guardar cambios' : 'Crear producto' }}
+        </button>
+      }
+    </div>
+  </form>
+</dialog>

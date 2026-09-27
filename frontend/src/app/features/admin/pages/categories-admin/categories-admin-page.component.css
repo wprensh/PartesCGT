@@ -1,0 +1,13 @@
+.create { display: flex; gap: .75rem; align-items: end; flex-wrap: wrap; margin-bottom: 1.25rem; }
+.create .field { flex: 1; min-width: 220px; max-width: 380px; }
+.create select { padding: .5rem .7rem; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); }
+
+.admin-table { max-width: 960px; }
+/* Subcategorías: sangría y fondo suave, como en el árbol anterior. */
+.child-row { background: var(--surface-2); }
+td.child { padding-left: 2.25rem; }
+td.child strong::before { content: '↳ '; color: var(--muted); font-weight: 400; }
+
+.inline { width: 100%; padding: .45rem .65rem; border: 1px solid var(--line-2); border-radius: 8px; background: var(--surface); }
+.muted { color: var(--muted); }
+.count { font-size: .9rem; margin-top: .6rem; }

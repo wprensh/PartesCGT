@@ -1,0 +1,33 @@
+<div class="toolbar">
+  <p class="muted">Personas que pueden entrar al panel. Lo que ve y hace cada una depende de su rol.</p>
+  <button class="btn" (click)="openNew()" [disabled]="roles().length === 0">Nuevo usuario</button>
+</div>
+
+@if (error()) { <p class="error" role="alert">{{ error() }}</p> }
+
+@if (loading()) {
+  <p class="muted">Cargando usuarios…</p>
+} @else {
+  <div class="card table-wrap">
+    <table class="table">
+      <thead><tr><th>Usuario</th><th>Rol</th><th>Estado</th><th>Último ingreso</th><th></th></tr></thead>
+      <tbody>
+        @for (u of users(); track u.id) {
+          <tr>
+            <td><strong>{{ u.fullName }}</strong>@if (u.id === currentUserId) { <span class="pill on">Tú</span> }
+              <small class="sub">{{ u.email }}</small></td>
+            <td>{{ u.role }}</td>
+            <td><span class="pill" [class.on]="u.isActive" [class.off]="!u.isActive">{{ u.isActive ? 'Activo' : 'Inactivo' }}</span></td>
+            <td>{{ u.lastLoginAt | dateTime:'Nunca' }}</td>
+            <td class="actions">
+              <button class="btn-link" (click)="edit(u)">Editar</button>
+              @if (u.id !== currentUserId) { <button class="btn-danger" (click)="remove(u)">Eliminar</button> }
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}
+
+<app-user-form-dialog [roles]="roles()" (saved)="onSaved($event)" />

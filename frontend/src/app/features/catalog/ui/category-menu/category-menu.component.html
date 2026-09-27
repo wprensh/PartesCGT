@@ -1,0 +1,48 @@
+<button #trigger type="button" class="trigger" aria-label="Categorías" aria-controls="category-menu"
+        [attr.aria-expanded]="open()" (click)="toggle()">
+  <app-icon name="menu" class="burger" />
+  <span class="label">Categorías</span>
+  <app-icon name="expand_more" class="chevron" />
+</button>
+
+@if (open()) {
+  <!-- Con teclado el menú se cierra con Esc; el fondo es solo un atajo para el mouse. -->
+  <div class="backdrop" aria-hidden="true" (click)="close()"></div>
+  <!-- Delegación: Enter sobre un enlace también dispara click, así que funciona con teclado. -->
+  <!-- eslint-disable-next-line @angular-eslint/template/click-events-have-key-events -->
+  <div #panel id="category-menu" class="panel" role="region" aria-label="Categorías" (click)="closeOnLink($event)">
+    <div class="drawer-head">
+      <strong>Categorías</strong>
+      <button type="button" class="close" (click)="close(true)" aria-label="Cerrar menú"><app-icon name="close" /></button>
+    </div>
+
+    <div class="container inner">
+      @for (family of categories.families(); track family.name) {
+        <section>
+          <h3>{{ family.name }}</h3>
+          <ul>
+            @for (c of family.items; track c.id) {
+              <li>
+                <a routerLink="/" [queryParams]="{ categoria: c.slug }" fragment="catalogo"
+                   routerLinkActive="on" ariaCurrentWhenActive="page" [routerLinkActiveOptions]="activeOptions">
+                  <span class="code-tag" aria-hidden="true">{{ c.code }}</span>
+                  <span class="name">{{ c.name }}</span>
+                  <span class="count" [attr.aria-label]="c.activeProducts + ' productos'">{{ c.activeProducts }}</span>
+                </a>
+              </li>
+            }
+          </ul>
+        </section>
+      } @empty {
+        <p class="empty">{{ categories.loaded() ? 'No hay categorías disponibles.' : 'Cargando categorías…' }}</p>
+      }
+
+      <aside class="help">
+        <strong>¿No sabes qué pieza necesitas?</strong>
+        <a routerLink="/" fragment="kits"><app-icon name="inventory_2" />Ver kits por objetivo</a>
+        <button type="button" (click)="ask()"><app-icon name="smart_toy" />Preguntar al asistente</button>
+        <a routerLink="/" fragment="catalogo" class="all">Ver todo el catálogo<app-icon name="arrow_forward" /></a>
+      </aside>
+    </div>
+  </div>
+}

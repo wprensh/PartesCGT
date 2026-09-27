@@ -1,0 +1,48 @@
+:host { display: block; }
+
+.head { display: flex; align-items: center; gap: .5rem; padding-bottom: .6rem; border-bottom: 1px solid var(--line); }
+.head h2 { font-size: 1.2rem; flex: 1; }
+.close, .foot { display: none; }
+
+details { border-bottom: 1px solid var(--line); padding: .7rem 0; }
+summary { font: 600 .95rem var(--display); cursor: pointer; list-style: none; display: flex; justify-content: space-between; }
+summary::-webkit-details-marker { display: none; }
+summary::after { content: '+'; color: var(--muted); font-weight: 400; }
+details[open] > summary::after { content: '−'; }
+details > :not(summary) { margin-top: .55rem; }
+
+ul { list-style: none; margin: 0; padding: 0; }
+.links a { display: flex; justify-content: space-between; gap: .5rem; padding: .35rem .6rem; border-radius: 10px;
+           color: var(--ink); text-decoration: none; }
+.links a:hover { background: var(--surface-2); }
+.links a.on { background: var(--tint); font-weight: 600; }
+.back { display: inline-flex; align-items: center; gap: .15rem; color: var(--pcb); text-decoration: none; font-weight: 600;
+        font-size: .9rem; margin-left: -.3rem; }
+.back:hover { text-decoration: underline; }
+.current { margin: .35rem 0 .2rem; font-weight: 600; }
+
+.count { color: var(--muted); font-family: var(--mono); font-size: .85rem; margin-left: auto; }
+.muted { color: var(--muted); font-size: .85rem; }
+
+.price { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; }
+.price label { display: grid; gap: .2rem; font-size: .8rem; color: var(--muted); }
+.price input { width: 100%; padding: .5rem .65rem; border: 1px solid var(--line-2); border-radius: 10px; background: var(--bg); color: var(--ink); }
+
+.options { display: grid; gap: .1rem; }
+.options label, .single { display: flex; align-items: center; gap: .5rem; padding: .25rem 0; cursor: pointer; }
+label.off { color: var(--muted); cursor: default; }
+input[type=checkbox], input[type=radio] { accent-color: var(--pcb); width: 1rem; height: 1rem; margin: 0; }
+
+.stars { display: inline-flex; align-items: center; font-size: .9rem; }
+.stars app-icon { font-size: 1.1rem; color: var(--line-2); }
+.stars app-icon.fill { color: var(--gold); }
+.stars > span { margin-left: .35rem; }
+
+/* Celular: el contenedor lo muestra como cajón; aquí solo el encabezado fijo y el botón final. */
+@media (max-width: 900px) {
+  .head { position: sticky; top: 0; background: var(--surface); z-index: 1; padding-top: .9rem; }
+  .close { display: grid; place-items: center; width: 2.25rem; height: 2.25rem; border: 0; border-radius: 6px;
+           background: none; color: var(--ink); }
+  .foot { display: block; position: sticky; bottom: 0; background: var(--surface); padding: .9rem 0; border-top: 1px solid var(--line); }
+  .foot .btn { width: 100%; }
+}

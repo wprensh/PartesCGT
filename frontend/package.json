@@ -1,0 +1,41 @@
+{
+  "name": "tienda-virtual-web",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve --proxy-config proxy.conf.json",
+    "build": "ng build",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "check": "npm run lint && npm test && npm run build"
+  },
+  "dependencies": {
+    "@angular/animations": "^19.2.25",
+    "@angular/cdk": "^19.2.19",
+    "@angular/common": "^19.2.0",
+    "@angular/compiler": "^19.2.0",
+    "@angular/core": "^19.2.0",
+    "@angular/forms": "^19.2.0",
+    "@angular/material": "^19.2.19",
+    "@angular/platform-browser": "^19.2.0",
+    "@angular/router": "^19.2.0",
+    "rxjs": "~7.8.0",
+    "tslib": "^2.3.0",
+    "zone.js": "~0.15.0"
+  },
+  "devDependencies": {
+    "@angular/build": "^19.2.0",
+    "@angular/cli": "^19.2.0",
+    "@angular/compiler-cli": "^19.2.0",
+    "angular-eslint": "^19.8.1",
+    "eslint": "^9.39.5",
+    "eslint-import-resolver-typescript": "^4.4.5",
+    "eslint-plugin-boundaries": "^5.4.0",
+    "typescript": "~5.7.2",
+    "typescript-eslint": "^8.70.1",
+    "vitest": "^3.2.7"
+  }
+}

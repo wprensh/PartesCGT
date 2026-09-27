@@ -1,0 +1,44 @@
+# Compilación .NET
+bin/
+obj/
+*.user
+
+# Bases de datos locales (SQLite de desarrollo/pruebas y sus archivos temporales)
+*.db
+*.db-shm
+*.db-wal
+
+# Imágenes subidas desde el panel: son datos, no código.
+backend/TiendaVirtual.Api/App_Data/
+
+# Frontend
+node_modules/
+dist/
+.angular/
+coverage/
+
+# Editores e IDE
+.vs/
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.swp
+
+# Sistema
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Secretos locales (las claves van en user-secrets, nunca en el repositorio)
+.env
+.env.*
+*.pfx
+*.pem
+secrets.json
+
+# Respaldos manuales: el historial lo guarda Git.
+*-respaldo-*/
+respaldo-*/
+
+# Logs
+*.log

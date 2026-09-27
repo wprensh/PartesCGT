@@ -1,0 +1,15 @@
+.dlg { display: grid; gap: .9rem; padding: 1.5rem; max-height: calc(100vh - 4rem); overflow-y: auto; }
+.dlg h2 { font-size: 1.4rem; }
+.row { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; }
+@media (max-width: 520px) { .row { grid-template-columns: 1fr; } }
+.buttons { display: flex; justify-content: flex-end; gap: .5rem; margin-top: .25rem; }
+.btn.btn-ghost { background: transparent; color: var(--ink); }
+
+.supplied { border-top: 1px solid var(--line); padding-top: .75rem; display: grid; gap: .5rem; }
+.supplied h3 { font-size: 1rem; }
+.compact-table { min-width: 0; font-size: .9rem; }
+.compact-table td, .compact-table th { padding: .45rem .5rem; }
+.sub { display: block; color: var(--muted); font-size: .8rem; }
+.pill { margin-left: .35rem; }
+.negative { color: var(--danger); font-weight: 600; }
+.muted { color: var(--muted); margin: 0; }

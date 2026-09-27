@@ -1,0 +1,18 @@
+<section class="hero">
+  <div>
+    <p class="eyebrow">Repuestos · Mejoras · Armado</p>
+    <h1>Revive tu computador o arma uno nuevo</h1>
+    <p class="lead">Elige un kit de piezas compatibles o cuéntale al asistente qué equipo tienes.
+      Te decimos qué comprar, sin adivinar.</p>
+    <div class="cta">
+      <button class="btn" (click)="viewKits.emit()"><app-icon name="inventory_2" />Ver kits</button>
+      <button class="btn btn-outline" (click)="askAssistant.emit()"><app-icon name="smart_toy" />Preguntar al asistente</button>
+    </div>
+  </div>
+
+  <ul class="trust">
+    @for (point of trustPoints; track point.icon) {
+      <li><b><app-icon [name]="point.icon" /></b><span>{{ point.text }}</span></li>
+    }
+  </ul>
+</section>

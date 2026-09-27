@@ -1,0 +1,17 @@
+<section class="card login">
+  <h1>Panel de administración</h1>
+  @if (expirada()) { <p class="notice">Tu sesión expiró. Ingresa de nuevo para continuar.</p> }
+
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <label class="field">Correo
+      <input formControlName="email" type="email" autocomplete="username">
+    </label>
+    <label class="field">Contraseña
+      <input formControlName="password" type="password" autocomplete="current-password">
+    </label>
+    @if (error()) { <p class="error" role="alert">{{ error() }}</p> }
+    <button class="btn" [disabled]="form.invalid || sending()">
+      {{ sending() ? 'Ingresando…' : 'Ingresar' }}
+    </button>
+  </form>
+</section>

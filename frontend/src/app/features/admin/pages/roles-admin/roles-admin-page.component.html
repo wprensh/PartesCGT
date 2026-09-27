@@ -1,0 +1,32 @@
+<div class="toolbar">
+  <p class="muted">Cada rol define qué puede ver y hacer en el panel. Asigna un rol a cada usuario en "Usuarios".</p>
+  <button class="btn" (click)="openNew()" [disabled]="loading()">Nuevo rol</button>
+</div>
+
+@if (error()) { <p class="error" role="alert">{{ error() }}</p> }
+
+@if (loading()) {
+  <p class="muted">Cargando roles…</p>
+} @else {
+  <ul class="roles">
+    @for (r of roles(); track r.id) {
+      <li class="card role">
+        <div class="role-head">
+          <h2>{{ r.name }}@if (r.isSystem) { <span class="pill on">Sistema</span> }</h2>
+          <span class="users">{{ r.userCount }} {{ r.userCount === 1 ? 'usuario' : 'usuarios' }}</span>
+        </div>
+        @if (r.description) { <p class="description">{{ r.description }}</p> }
+        <p class="summary">{{ summary(r) }}</p>
+        <div class="actions">
+          <button class="btn-link" (click)="edit(r)">Editar</button>
+          @if (!r.isSystem) {
+            <button class="btn-danger" (click)="remove(r)" [disabled]="r.userCount > 0"
+                    [title]="r.userCount > 0 ? 'Asigna otro rol a sus usuarios primero' : ''">Eliminar</button>
+          }
+        </div>
+      </li>
+    }
+  </ul>
+}
+
+<app-role-form-dialog [catalog]="catalog()" (saved)="onSaved($event)" />

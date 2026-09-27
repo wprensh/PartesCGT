@@ -1,0 +1,33 @@
+@if (open()) {
+  <section class="panel" role="dialog" aria-label="Asistente de compras">
+    <header>
+      <h2><app-icon name="smart_toy" /> Asistente</h2>
+      <button class="btn-ghost close" (click)="open.set(false)" aria-label="Cerrar asistente"><app-icon name="close" /></button>
+    </header>
+
+    <div class="log" #log>
+      @if (messages().length === 0) {
+        <p class="hint">Cuéntame qué equipo tienes y qué quieres mejorar. Por ejemplo:
+          “Mi portátil tiene 4 GB de RAM y va muy lento”.</p>
+      }
+      @for (m of messages(); track $index) {
+        <div class="msg" [class.me]="m.role === 'user'">
+          <p>{{ m.content }}</p>
+          @for (p of m.products ?? []; track p.id) {
+            <app-product-card [product]="p" compact (add)="addToCart($event)" />
+          }
+        </div>
+      }
+      @if (thinking()) { <p class="hint">Buscando en el catálogo…</p> }
+      @if (error()) { <p class="error">{{ error() }}</p> }
+    </div>
+
+    <form (ngSubmit)="send()">
+      <input name="draft" [ngModel]="draft()" (ngModelChange)="draft.set($event)" placeholder="Escribe tu pregunta"
+             maxlength="2000" aria-label="Mensaje para el asistente" autocomplete="off">
+      <button class="btn" [disabled]="!draft().trim() || thinking()">Enviar</button>
+    </form>
+  </section>
+} @else {
+  <button class="btn launcher" (click)="open.set(true)"><app-icon name="smart_toy" />¿Qué pieza necesito?</button>
+}

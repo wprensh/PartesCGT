@@ -1,0 +1,56 @@
+<dialog #dialog aria-labelledby="user-dialog-title">
+  <form [formGroup]="form" (ngSubmit)="save()" class="dlg">
+    <h2 id="user-dialog-title">{{ editing() ? 'Editar usuario' : 'Nuevo usuario' }}</h2>
+
+    <label class="field">Correo
+      <input formControlName="email" type="email" maxlength="254" autocomplete="off">
+      @if (editing()) { <small>El correo no se cambia: crea otro usuario si hace falta.</small> }
+    </label>
+    <label class="field">Nombre completo
+      <input formControlName="fullName" maxlength="120" autocomplete="off">
+    </label>
+    <label class="field">Rol
+      <select formControlName="roleId">
+        <option [ngValue]="0" disabled>Selecciona un rol</option>
+        @for (r of roles(); track r.id) { <option [ngValue]="r.id">{{ r.name }}</option> }
+      </select>
+    </label>
+
+    @if (editing()) {
+      <label class="check">
+        <input type="checkbox" formControlName="isActive"> Activo (puede entrar al panel)
+      </label>
+      @if (isSelf()) { <p class="notice">Es tu usuario: no puedes cambiar tu rol ni desactivarte. Pídeselo a otro administrador.</p> }
+    } @else {
+      <label class="field">Contraseña inicial
+        <input formControlName="password" type="password" autocomplete="new-password" [attr.minlength]="minPassword">
+        <small>Mínimo {{ minPassword }} caracteres, con letras y números. Compártela por un canal seguro.</small>
+      </label>
+    }
+
+    @if (form.touched && form.invalid) {
+      <p class="error">Revisa los campos: correo válido, nombre de al menos 3 caracteres y un rol.</p>
+    }
+    @if (error()) { <p class="error" role="alert">{{ error() }}</p> }
+
+    <div class="buttons">
+      <button type="button" class="btn btn-ghost" (click)="close()">Cancelar</button>
+      <button class="btn" [disabled]="saving()">
+        {{ saving() ? 'Guardando…' : (editing() ? 'Guardar cambios' : 'Crear usuario') }}
+      </button>
+    </div>
+  </form>
+
+  @if (editing() && !isSelf()) {
+    <section class="reset" aria-labelledby="reset-title">
+      <h3 id="reset-title">Restablecer contraseña</h3>
+      <p class="muted">Para cuando el usuario la olvidó. Sus sesiones abiertas se cierran.</p>
+      <div class="reset-row">
+        <input [formControl]="newPassword" type="password" autocomplete="new-password" aria-label="Contraseña nueva"
+               placeholder="Contraseña nueva">
+        <button type="button" class="btn btn-ghost" (click)="resetPassword()">Restablecer</button>
+      </div>
+      @if (resetMessage()) { <p class="note" role="status">{{ resetMessage() }}</p> }
+    </section>
+  }
+</dialog>

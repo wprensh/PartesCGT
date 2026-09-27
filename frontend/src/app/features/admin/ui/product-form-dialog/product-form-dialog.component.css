@@ -1,0 +1,33 @@
+.dlg { display: grid; gap: .9rem; padding: 1.5rem; max-height: calc(100vh - 4rem); overflow-y: auto; }
+.dlg h2 { font-size: 1.4rem; }
+.row { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; }
+.buttons { display: flex; justify-content: flex-end; gap: .5rem; margin-top: .25rem; }
+.btn.btn-ghost { background: transparent; color: var(--ink); }
+
+.attrs { border: 1px solid var(--line); border-radius: 8px; padding: .75rem; margin: 0; display: grid; gap: .5rem; }
+.attrs legend { font-weight: 600; padding: 0 .3rem; }
+.attrs small { color: var(--muted); }
+.attr { display: grid; grid-template-columns: 1fr 1fr auto; gap: .5rem; }
+.attr input { padding: .5rem .65rem; border: 1px solid var(--line); border-radius: 6px; min-width: 0; }
+.attr input.ng-invalid.ng-touched { border-color: var(--danger); }
+.add { justify-self: start; padding-left: 0; }
+.notice { margin: 0; }
+.muted { color: var(--muted); margin: 0; }
+
+.image { border: 1px solid var(--line); border-radius: 8px; padding: .75rem; margin: 0; display: grid; gap: .5rem; }
+.image legend { font-weight: 600; padding: 0 .3rem; }
+.image small { color: var(--muted); }
+.image-row { display: grid; grid-template-columns: 8rem minmax(0, 1fr); gap: .75rem; align-items: start; }
+.preview { aspect-ratio: 4 / 3; border-radius: 12px; overflow: hidden; background: #fff; display: grid; place-items: center; }
+.preview img { width: 100%; height: 100%; object-fit: contain; padding: .35rem; }
+.preview.empty { background: var(--surface-2); border: 1px dashed var(--line-2); color: var(--muted); font-size: .8rem; }
+.image-controls { display: grid; gap: .5rem; justify-items: start; }
+.image-controls input[type=url] { width: 100%; padding: .55rem .7rem; border: 1px solid var(--line-2); border-radius: 10px;
+                                  background: var(--bg); color: var(--ink); }
+.upload { position: relative; padding: .5rem 1rem; }
+.upload:focus-within { outline: 3px solid var(--signal); outline-offset: 2px; }
+.upload.busy { opacity: .6; cursor: progress; }
+.remove { padding-left: 0; color: var(--danger); }
+.visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden;
+                   clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+@media (max-width: 480px) { .image-row { grid-template-columns: 1fr; } }

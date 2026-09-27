@@ -1,0 +1,36 @@
+/* MatToolbar con la paleta azul nocturno (.tema-oscuro redefine --surface, --ink, etc. en esta barra). */
+.admin-bar {
+  --mat-toolbar-container-background-color: var(--surface);
+  --mat-toolbar-container-text-color: var(--ink);
+  --mat-toolbar-standard-height: 64px;
+  --mat-toolbar-mobile-height: 56px;
+  --mat-toolbar-title-text-font: var(--display);
+  --mat-toolbar-title-text-size: 1.05rem;
+  --mat-toolbar-title-text-weight: 600;
+  --mat-toolbar-title-text-tracking: -.01em;
+  border-radius: 20px; box-shadow: var(--shadow); margin-bottom: 1.5rem; padding: 0 .5rem;
+}
+
+.top { gap: .5rem; }
+.brand { display: inline-flex; align-items: center; gap: .5rem; }
+.spacer { flex: 1; }
+.user { display: grid; text-align: right; line-height: 1.2; margin-right: .5rem; font-family: var(--body); }
+.user strong { font-size: .92rem; }
+.user small { font-size: .78rem; font-weight: 400; color: var(--muted); }
+/* El tooltip se muestra debajo: arriba de la barra está el header de la tienda. */
+.tooltip::after { bottom: auto; top: calc(100% + 8px); transform: translate(-50%, -4px); }
+.tooltip::before { bottom: auto; top: calc(100% + 3px); border-top-color: transparent; border-bottom: 5px solid var(--ink); border-top: 0; }
+.tooltip:hover::after, .tooltip:focus-within::after { transform: translate(-50%, 0); }
+
+/* Secciones: pestañas con icono; en pantallas angostas se desplazan horizontalmente. */
+.sections { height: auto; min-height: 52px; border-top: 1px solid var(--line); }
+nav { position: relative; display: flex; gap: .25rem; overflow-x: auto; scrollbar-width: none; width: 100%; }
+nav a { display: inline-flex; align-items: center; gap: .45rem; padding: .5rem .85rem; border-radius: 999px;
+        font: 500 .95rem var(--body); color: var(--muted); text-decoration: none; white-space: nowrap; }
+nav a:hover { color: var(--ink); background: var(--tint-2); }
+nav a.active { color: var(--on-light); background: var(--pcb); font-weight: 600; }
+
+@media (max-width: 640px) {
+  .user { display: none; }
+  .brand { font-size: .95rem; }
+}

@@ -1,0 +1,52 @@
+@if (order(); as o) {
+  <section class="done">
+    <h1>Pedido #{{ o.id }} confirmado</h1>
+    <p>Enviamos el resumen a {{ o.customerEmail }}. Total pagado: <strong>{{ o.total | cop }}</strong></p>
+    <a routerLink="/" class="btn">Seguir comprando</a>
+  </section>
+} @else if (cart.items().length === 0) {
+  <section class="done">
+    <h1>Tu carrito está vacío</h1>
+    <p>Agrega piezas desde el catálogo o pídele una recomendación al asistente.</p>
+    <a routerLink="/" class="btn">Ver catálogo</a>
+  </section>
+} @else {
+  <h1>Carrito</h1>
+  <div class="layout">
+    <ul class="lines">
+      @for (item of cart.items(); track item.product.id) {
+        <li>
+          <div>
+            <strong>{{ item.product.name }}</strong>
+            <small>{{ item.product.price | cop }} c/u</small>
+          </div>
+          <div class="qty">
+            <button class="btn-ghost" (click)="cart.setQuantity(item.product.id, item.quantity - 1)" aria-label="Quitar uno">
+              <app-icon name="remove" />
+            </button>
+            <span aria-live="polite">{{ item.quantity }}</span>
+            <button class="btn-ghost" (click)="cart.setQuantity(item.product.id, item.quantity + 1)"
+                    [disabled]="item.quantity >= item.product.stock" aria-label="Agregar uno">
+              <app-icon name="add" />
+            </button>
+          </div>
+          <strong class="subtotal">{{ item.product.price * item.quantity | cop }}</strong>
+        </li>
+      }
+    </ul>
+
+    <form [formGroup]="form" (ngSubmit)="checkout()" class="checkout">
+      <p class="total">Total <strong>{{ cart.total() | cop }}</strong></p>
+      <label class="field">Nombre completo
+        <input formControlName="customerName" autocomplete="name">
+      </label>
+      <label class="field">Correo
+        <input formControlName="customerEmail" type="email" autocomplete="email">
+      </label>
+      @if (error()) { <p class="error">{{ error() }}</p> }
+      <button class="btn" type="submit" [disabled]="form.invalid || sending()">
+        {{ sending() ? 'Confirmando…' : 'Confirmar pedido' }}
+      </button>
+    </form>
+  </div>
+}

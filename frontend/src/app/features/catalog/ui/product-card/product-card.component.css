@@ -1,0 +1,47 @@
+/* Tarjeta: superficie azul, borde fino, esquinas redondeadas */
+.tag { background: var(--surface); border: 1px solid var(--line);
+       border-radius: 20px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .55rem; height: 100%;
+       transition: border-color .15s, transform .15s; }
+.tag:hover { border-color: var(--line-2); transform: translateY(-2px); }
+
+/* Foto: fondo blanco (la mayoría de fotos de producto vienen sobre blanco) y proporción fija para que
+   la cuadrícula no salte mientras cargan. */
+.media { margin: -.2rem -.3rem .2rem; aspect-ratio: 4 / 3; border-radius: 14px; overflow: hidden;
+         background: #fff; display: grid; place-items: center; }
+.media img { width: 100%; height: 100%; object-fit: contain; padding: .75rem; transition: transform .25s; }
+.tag:hover .media img { transform: scale(1.04); }
+.media.empty { background: var(--surface-2); border: 1px dashed var(--line-2); }
+.placeholder { font: 500 1.75rem var(--mono); letter-spacing: .12em; color: var(--muted); }
+
+header { display: flex; align-items: center; gap: .5rem; font-size: .85rem; color: var(--muted); }
+.cat { flex: 1; }
+.sku { font-family: var(--mono); font-size: .75rem; }
+
+h3 { font-size: 1.15rem; }
+.brand { margin: 0 0 -.35rem; font: 500 .72rem var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.rating { margin: 0; display: flex; align-items: center; gap: .2rem; font-size: .85rem; color: var(--muted); }
+.rating app-icon { color: var(--gold); font-size: 1.05rem; }
+.rating b { color: var(--ink); }
+
+.specs { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: .3rem; }
+.specs li { font: 500 .74rem var(--mono); background: var(--bg); border: 1px solid var(--line); border-radius: 999px;
+            padding: .15rem .55rem; color: var(--ink); }
+.description { margin: 0; color: var(--muted); font-size: .95rem; flex: 1; }
+
+footer { display: flex; justify-content: space-between; align-items: flex-end; gap: .75rem; margin-top: auto;
+         padding-top: .6rem; border-top: 1px solid var(--line); }
+.actions { display: flex; gap: .4rem; flex-shrink: 0; }
+.actions .btn-ghost { color: var(--ink); }
+.price { display: block; font: 600 1.3rem var(--display); letter-spacing: -.02em; }
+.stock { font-size: .82rem; font-weight: 500; color: var(--muted); }
+.stock.low { color: var(--warn); }
+.stock.out { color: var(--danger); }
+
+.compact { padding: .75rem; }
+.compact:hover { transform: none; }
+.compact h3 { font-size: 1rem; }
+.compact .media { margin: 0 0 .1rem; aspect-ratio: 16 / 9; }
+.compact .placeholder { font-size: 1.2rem; }
+.compact .price { font-size: 1.1rem; }
+.compact footer { border-top: 0; padding-top: 0; }
+.compact .btn.icon-btn { width: 2.25rem; height: 2.25rem; }

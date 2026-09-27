@@ -1,0 +1,35 @@
+@if (kits().length) {
+  <div class="section-head">
+    <h2 id="kits-title">¿Qué quieres lograr?</h2>
+    <p>Kits con piezas que funcionan juntas. Agrégalos completos o pregunta si sirven para tu equipo.</p>
+  </div>
+
+  <div class="grid">
+    @for (kit of kits(); track kit.id) {
+      <article class="kit">
+        <header>
+          <span class="code-tag amber" aria-hidden="true">{{ kit.code }}</span>
+          <span>{{ kit.goal }}</span>
+        </header>
+        <h3>{{ kit.name }}</h3>
+        <ul>
+          @for (p of kit.products; track p.id) {
+            <li><span>{{ p.name }}</span><span class="price">{{ p.price | cop }}</span></li>
+          }
+        </ul>
+        <p class="note">{{ kit.note }}</p>
+        <footer>
+          <strong class="total">{{ kit.total | cop }}</strong>
+          <!-- El tooltip va en un contenedor porque un botón deshabilitado no recibe eventos del mouse. -->
+          <span class="tooltip" [attr.data-tooltip]="kit.available ? 'Agregar' : 'No disponible'">
+            <button class="btn icon-btn" (click)="addKit.emit(kit)" [disabled]="!kit.available"
+                    [attr.aria-label]="(kit.available ? 'Agregar al carrito: ' : 'No disponible: ') + kit.name">
+              <app-icon name="add_shopping_cart" />
+            </button>
+          </span>
+        </footer>
+        <button class="btn-link ask" (click)="ask.emit(kit.question)">¿Sirve para mi equipo?</button>
+      </article>
+    }
+  </div>
+}

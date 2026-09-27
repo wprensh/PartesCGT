@@ -1,0 +1,65 @@
+{
+  "info": {
+    "name": "Tienda Virtual - Administración",
+    "description": "Crear el primer administrador e iniciar sesión. Completa las variables 'email', 'fullName' y 'password' en la pestaña Variables de la colección (no las guardes en archivos compartidos).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:5080" },
+    { "key": "email", "value": "" },
+    { "key": "fullName", "value": "" },
+    { "key": "password", "value": "" },
+    { "key": "token", "value": "" }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+  },
+  "item": [
+    {
+      "name": "1. Crear primer administrador",
+      "event": [{
+        "listen": "test",
+        "script": { "exec": [
+          "if (pm.response.code === 200) pm.collectionVariables.set('token', pm.response.json().token);"
+        ] }
+      }],
+      "request": {
+        "auth": { "type": "noauth" },
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/auth/setup",
+        "body": { "mode": "raw", "raw": "{\n  \"email\": \"{{email}}\",\n  \"fullName\": \"{{fullName}}\",\n  \"password\": \"{{password}}\"\n}" }
+      }
+    },
+    {
+      "name": "2. Iniciar sesión",
+      "event": [{
+        "listen": "test",
+        "script": { "exec": [
+          "if (pm.response.code === 200) pm.collectionVariables.set('token', pm.response.json().token);"
+        ] }
+      }],
+      "request": {
+        "auth": { "type": "noauth" },
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/auth/login",
+        "body": { "mode": "raw", "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}" }
+      }
+    },
+    {
+      "name": "3. Quién soy",
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/auth/me" }
+    },
+    {
+      "name": "4. Crear otro usuario",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/users",
+        "body": { "mode": "raw", "raw": "{\n  \"email\": \"catalogo@tienda.local\",\n  \"fullName\": \"Encargado de catálogo\",\n  \"roleId\": 2,\n  \"password\": \"\"\n}" }
+      }
+    }
+  ]
+}

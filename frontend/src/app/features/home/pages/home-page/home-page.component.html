@@ -1,0 +1,9 @@
+<app-store-hero (viewKits)="scrollToKits()" (askAssistant)="assistant.ask()" />
+
+<section #kitsSection id="kits" class="block" aria-labelledby="kits-title">
+  <app-kits-section (addKit)="addKit($event)" (ask)="assistant.ask($event)" />
+</section>
+
+<section id="catalogo" class="block catalog" aria-labelledby="catalog-title">
+  <app-product-browser [categorySlug]="categoria()" (add)="addProduct($event)" (askAssistant)="assistant.ask($event)" />
+</section>

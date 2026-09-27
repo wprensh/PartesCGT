@@ -1,0 +1,66 @@
+@let p = product();
+<article class="tag" [class.compact]="compact()">
+  <!-- alt vacío: el nombre ya está en el título; repetirlo sería ruido para lectores de pantalla. -->
+  <div class="media" [class.empty]="!imageSrc()">
+    @if (imageSrc(); as src) {
+      <img [src]="src" alt="" loading="lazy" decoding="async" (error)="failedSrc.set(src)">
+    } @else {
+      <span class="placeholder" aria-hidden="true">{{ code() }}</span>
+    }
+  </div>
+
+  <header>
+    <span class="code-tag" aria-hidden="true">{{ code() }}</span>
+    <span class="cat">{{ p.category }}</span>
+    <span class="sku">{{ sku() }}</span>
+  </header>
+
+  @if (p.brand) { <p class="brand">{{ p.brand }}</p> }
+  <h3>{{ p.name }}</h3>
+
+  @if (p.rating !== null) {
+    <p class="rating" [attr.aria-label]="'Calificación ' + (p.rating | number:'1.1-1') + ' de 5, ' + p.reviewCount + ' reseñas'">
+      <app-icon name="star" filled />
+      <b aria-hidden="true">{{ p.rating | number:'1.1-1' }}</b>
+      <span aria-hidden="true">({{ p.reviewCount }})</span>
+    </p>
+  }
+
+  @if (!compact()) {
+    @if (specs().length) {
+      <ul class="specs" aria-label="Especificaciones">
+        @for (s of specs(); track s) { <li>{{ s }}</li> }
+      </ul>
+    }
+    <p class="description">{{ p.description }}</p>
+  }
+
+  <footer>
+    <div>
+      <strong class="price">{{ p.price | cop }}</strong>
+      @if (!compact()) {
+        @switch (stock()) {
+          @case ('out') { <small class="stock out">Agotado</small> }
+          @case ('low') { <small class="stock low">Quedan {{ p.stock }}</small> }
+          @default { <small class="stock">En stock</small> }
+        }
+      }
+    </div>
+
+    <div class="actions">
+      <span class="tooltip" data-tooltip="Ver">
+        <button type="button" class="btn btn-ghost icon-btn" (click)="openDetail()" aria-haspopup="dialog"
+                [attr.aria-label]="'Ver detalle: ' + p.name">
+          <app-icon name="visibility" />
+        </button>
+      </span>
+      <!-- El tooltip va en un contenedor porque un botón deshabilitado no recibe eventos del mouse. -->
+      <span class="tooltip" [attr.data-tooltip]="stock() === 'out' ? 'Agotado' : 'Agregar'">
+        <button class="btn icon-btn" (click)="add.emit(p)" [disabled]="stock() === 'out'"
+                [attr.aria-label]="(stock() === 'out' ? 'Agotado: ' : 'Agregar al carrito: ') + p.name">
+          <app-icon name="add_shopping_cart" />
+        </button>
+      </span>
+    </div>
+  </footer>
+</article>

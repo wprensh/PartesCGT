@@ -1,0 +1,34 @@
+<mat-toolbar class="admin-bar tema-oscuro">
+  <mat-toolbar-row class="top">
+    <span class="brand"><app-icon name="storefront" />Panel de administración</span>
+    <span class="spacer"></span>
+    <span class="user">
+      <strong>{{ auth.displayName() }}</strong>
+      <small>{{ auth.profile()?.role }}</small>
+    </span>
+    <span class="tooltip" data-tooltip="Cambiar contraseña">
+      <button type="button" class="btn icon-btn" aria-label="Cambiar contraseña" (click)="passwordDialog().open()">
+        <app-icon name="key" />
+      </button>
+    </span>
+    <span class="tooltip" data-tooltip="Cerrar sesión">
+      <button type="button" class="btn icon-btn" aria-label="Cerrar sesión" (click)="auth.logout()">
+        <app-icon name="logout" />
+      </button>
+    </span>
+  </mat-toolbar-row>
+
+  <mat-toolbar-row class="sections">
+    <nav aria-label="Secciones del panel">
+      @for (section of sections(); track section.path) {
+        <a #link [routerLink]="section.path" routerLinkActive="active" ariaCurrentWhenActive="page"
+           (isActiveChange)="$event && revealTab(link)">
+          <app-icon [name]="section.icon" />{{ section.label }}
+        </a>
+      }
+    </nav>
+  </mat-toolbar-row>
+</mat-toolbar>
+
+<router-outlet />
+<app-change-password-dialog />

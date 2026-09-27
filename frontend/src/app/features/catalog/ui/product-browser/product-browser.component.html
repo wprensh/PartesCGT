@@ -1,0 +1,77 @@
+<div class="section-head">
+  <h2 id="catalog-title">
+    @if (store.parentCategory(); as parent) { <span class="crumb">{{ parent.name }} ›</span> }
+    {{ store.category()?.name ?? 'Catálogo' }}
+  </h2>
+  @if (store.category()) { <p><a [routerLink]="[]" fragment="catalogo">Ver todo el catálogo</a></p> }
+</div>
+
+<div class="layout">
+  @if (filtersOpen()) {
+    <!-- Con teclado el cajón se cierra con Esc o con su botón; el fondo es solo un atajo para el mouse. -->
+    <div class="backdrop" aria-hidden="true" (click)="filtersOpen.set(false)"></div>
+  }
+  <app-catalog-filters id="filtros" class="filters-panel" [class.open]="filtersOpen()"
+                       [facets]="store.facets()" [category]="store.category()" [resultCount]="store.results().length"
+                       [(filters)]="store.filters" (closed)="filtersOpen.set(false)" />
+
+  <div class="results">
+    <div class="toolbar">
+      <div class="search">
+        <app-icon name="search" />
+        <input type="search" placeholder="Buscar: SSD, Kingston, Ryzen…" aria-label="Buscar productos"
+               [value]="store.query()" (input)="setQuery($event)">
+      </div>
+      <button type="button" class="btn btn-ghost filters-btn" (click)="filtersOpen.set(true)" aria-controls="filtros">
+        <app-icon name="tune" />Filtros
+        @if (store.activeCount()) { <b class="badge">{{ store.activeCount() }}</b> }
+      </button>
+      <label class="sort">Ordenar
+        <select [value]="store.sort()" (change)="setSort($event)">
+          @for (o of sortOptions; track o.key) { <option [value]="o.key">{{ o.label }}</option> }
+        </select>
+      </label>
+    </div>
+
+    @switch (store.status()) {
+      @case ('loading') {
+        <p class="muted">Cargando productos…</p>
+      }
+      @case ('error') {
+        <div class="error"><p>No se pudo cargar el catálogo.</p><p><code>{{ store.error() }}</code></p></div>
+      }
+      @default {
+        <div class="summary" aria-live="polite">
+          <span>{{ resultsLabel() }}</span>
+          @for (chip of store.activeFilters(); track chip.label) {
+            <button type="button" class="chip" (click)="store.removeFilter(chip)" [attr.aria-label]="'Quitar filtro ' + chip.label">
+              {{ chip.label }}<app-icon name="close" />
+            </button>
+          }
+          @if (store.activeCount()) {
+            <button type="button" class="btn-link" (click)="store.clearFilters()">Limpiar filtros</button>
+          }
+        </div>
+
+        @if (store.scope().length === 0) {
+          <p class="muted">Ningún producto coincide con tu búsqueda. Prueba con otra palabra o
+            <button class="btn-link inline" (click)="askAssistant.emit(store.query())">pregúntale al asistente</button>.</p>
+        } @else if (store.results().length === 0) {
+          <p class="muted">Ningún producto cumple todos los filtros.
+            <button class="btn-link inline" (click)="store.clearFilters()">Limpiar filtros</button></p>
+        } @else {
+          <div class="grid">
+            @for (p of store.page.rows(); track p.id) {
+              <app-product-card [product]="p" (add)="add.emit($event)" />
+            }
+          </div>
+          @if (store.page.length() > store.page.pageSize) {
+            <mat-paginator class="pager" [length]="store.page.length()" [pageIndex]="store.page.pageIndex()"
+                           [pageSize]="store.page.pageSize" [hidePageSize]="true" [showFirstLastButtons]="true"
+                           (page)="changePage($event)" aria-label="Páginas del catálogo" />
+          }
+        }
+      }
+    }
+  </div>
+</div>

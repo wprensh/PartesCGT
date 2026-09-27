@@ -1,0 +1,18 @@
+:host { display: block; }
+
+.section-head { margin-bottom: 1rem; }
+.section-head h2 { font-size: 1.6rem; }
+.section-head p { margin: .35rem 0 0; color: var(--muted); }
+
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1rem; }
+.kit { background: var(--surface); border: 1px solid var(--line); border-radius: 20px;
+       padding: 1.25rem 1.3rem; display: flex; flex-direction: column; gap: .6rem; }
+.kit header { display: flex; align-items: center; gap: .5rem; font-size: .85rem; color: var(--muted); font-weight: 600; }
+.kit h3 { font-size: 1.2rem; }
+.kit ul { list-style: none; margin: 0; padding: 0; font-size: .9rem; }
+.kit li { display: flex; justify-content: space-between; gap: .75rem; padding: .3rem 0; border-bottom: 1px solid var(--line); }
+.price { font-family: var(--mono); font-size: .82rem; white-space: nowrap; color: var(--muted); }
+.note { margin: 0; font-size: .88rem; color: var(--muted); flex: 1; }
+.kit footer { display: flex; justify-content: space-between; align-items: center; gap: .75rem; }
+.total { font: 600 1.35rem var(--display); letter-spacing: -.02em; }
+.ask { align-self: flex-start; padding-left: 0; }
