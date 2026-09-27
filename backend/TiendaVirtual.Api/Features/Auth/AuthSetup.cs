@@ -92,11 +92,18 @@ public static class AuthSetup
     /// </summary>
     private static void EnsureSigningKey(JwtOptions jwt, IHostEnvironment environment)
     {
-        if (Encoding.UTF8.GetByteCount(jwt.Key) >= JwtOptions.MinKeyBytes) return;
-        if (!environment.IsDevelopment())
-            throw new InvalidOperationException(
-                $"Jwt:Key debe tener al menos {JwtOptions.MinKeyBytes} caracteres. " +
-                "Configúrala como secreto (en Render: variable de entorno Jwt__Key).");
-        jwt.Key = Convert.ToBase64String(RandomNumberGenerator.GetBytes(48));
+        var length = Encoding.UTF8.GetByteCount(jwt.Key);
+        if (length >= JwtOptions.MinKeyBytes) return;
+        if (environment.IsDevelopment())
+        {
+            jwt.Key = Convert.ToBase64String(RandomNumberGenerator.GetBytes(48));
+            return;
+        }
+        // El mensaje distingue "no llegó" de "es corta" (sin revelar la clave) para diagnosticar el despliegue.
+        throw new InvalidOperationException(string.IsNullOrWhiteSpace(jwt.Key)
+            ? "Jwt:Key no está configurada: la aplicación no recibió ningún valor. En Render, agrega la variable de " +
+              "entorno Jwt__Key (dos guiones bajos, sin espacios) en ESTE servicio y pulsa \"Save, rebuild and deploy\"."
+            : $"Jwt:Key es demasiado corta: tiene {length} caracteres y el mínimo es {JwtOptions.MinKeyBytes}. " +
+              "Genera una nueva con: [Convert]::ToBase64String([Security.Cryptography.RandomNumberGenerator]::GetBytes(48))");
     }
 }

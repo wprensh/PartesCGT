@@ -70,21 +70,24 @@ public sealed class NoProxyTests(NoProxyApiFactory factory) : IClassFixture<NoPr
     }
 }
 
-/// <summary>Fuera de Development y con una clave JWT demasiado corta.</summary>
-public sealed class ShortJwtKeyApiFactory : ApiFactory
+/// <summary>Fuera de Development con la clave JWT indicada (vacía o corta).</summary>
+public sealed class JwtKeyApiFactory(string key) : ApiFactory
 {
-    protected override IEnumerable<KeyValuePair<string, string?>> ExtraSettings => [new("Jwt:Key", "corta")];
+    protected override IEnumerable<KeyValuePair<string, string?>> ExtraSettings => [new("Jwt:Key", key)];
 }
 
 public class StartupValidationTests
 {
-    [Fact]
-    public void Sin_una_clave_JWT_valida_la_API_no_arranca()
+    [Theory]
+    [InlineData("", "no está configurada")]
+    [InlineData("corta", "tiene 5 caracteres")]
+    public void Sin_una_clave_JWT_valida_la_API_no_arranca_y_dice_por_que(string key, string reason)
     {
-        using var factory = new ShortJwtKeyApiFactory();
+        using var factory = new JwtKeyApiFactory(key);
 
-        var error = Assert.ThrowsAny<Exception>(() => factory.CreateClient());
-        Assert.Contains("Jwt:Key", error.ToString());
+        var error = Assert.ThrowsAny<Exception>(() => factory.CreateClient()).ToString();
+        Assert.Contains("Jwt:Key", error);
+        Assert.Contains(reason, error);
     }
 }
 
