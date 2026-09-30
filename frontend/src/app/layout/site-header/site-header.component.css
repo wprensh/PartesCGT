@@ -1,7 +1,12 @@
 /* Sticky en el host: si fuera en .top, se quedaría fijo solo dentro de este componente.
    z-index por encima del botón del asistente (20) para que el menú de categorías lo tape al abrirse. */
 :host { display: block; position: sticky; top: 0; z-index: 25; }
-.top { background: rgba(8, 21, 48, .88); backdrop-filter: blur(14px); color: #fff; border-bottom: 1px solid var(--line); }
+.top { position: relative; color: #fff; border-bottom: 1px solid var(--line); }
+/* Fondo translúcido con desenfoque en una capa aparte: backdrop-filter en .top haría que los elementos
+   position: fixed de adentro (el panel lateral de categorías en celular) se ubiquen respecto del header
+   (60 px de alto) y no de la pantalla, y el menú no se vería al abrirlo. */
+.top::before { content: ''; position: absolute; inset: 0; z-index: -1;
+               background: rgba(8, 21, 48, .88); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
 .bar { display: flex; align-items: center; gap: 1.25rem; height: 60px; }
 
 .brand { font: 700 1.25rem var(--display); color: #fff; text-decoration: none; letter-spacing: .04em; }
