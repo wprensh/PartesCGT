@@ -5,7 +5,7 @@
   </div>
 
   <div class="grid">
-    @for (kit of kits(); track kit.id) {
+    @for (kit of page.rows(); track kit.id) {
       <article class="kit">
         <header>
           <span class="code-tag amber" aria-hidden="true">{{ kit.code }}</span>
@@ -30,6 +30,16 @@
         </footer>
         <button class="btn-link ask" (click)="ask.emit(kit.question)">¿Sirve para mi equipo?</button>
       </article>
+    }
+  </div>
+
+  <div class="more">
+    <button type="button" class="btn btn-ghost" (click)="viewMore.emit()">
+      Ver más kits<app-icon name="arrow_forward" />
+    </button>
+    @if (page.length() > page.pageSize) {
+      <mat-paginator [length]="page.length()" [pageIndex]="page.pageIndex()" [pageSize]="page.pageSize"
+                     [hidePageSize]="true" (page)="page.onPage($event)" aria-label="Páginas de kits" />
     }
   </div>
 }

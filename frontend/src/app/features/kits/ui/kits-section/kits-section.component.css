@@ -4,7 +4,13 @@
 .section-head h2 { font-size: 1.6rem; }
 .section-head p { margin: .35rem 0 0; color: var(--muted); }
 
-.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1rem; }
+/* Máximo 3 columnas (3 kits por página); en pantallas angostas bajan a 2 o 1 (mínimo 250px por kit). */
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(max(250px, calc((100% - 2rem) / 3)), 1fr)); gap: 1rem; }
+
+/* "Ver más kits" a la izquierda y el paginador a la derecha; en celular se apilan. */
+.more { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .5rem 1rem; margin-top: 1rem; }
+.more .btn { display: inline-flex; align-items: center; gap: .4rem; }
+.more mat-paginator { margin-left: auto; }
 .kit { background: var(--surface); border: 1px solid var(--line); border-radius: 20px;
        padding: 1.25rem 1.3rem; display: flex; flex-direction: column; gap: .6rem; }
 .kit header { display: flex; align-items: center; gap: .5rem; font-size: .85rem; color: var(--muted); font-weight: 600; }
