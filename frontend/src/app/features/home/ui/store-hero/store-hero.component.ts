@@ -6,10 +6,10 @@ import { IconName } from '@shared/ui/icon/icon-names';
 interface TrustPoint { icon: IconName; text: string; }
 
 /**
- * Foto del banner, servida desde public/ (se copia tal cual al sitio publicado).
- * 1920 px de ancho y ~300 KB: para cambiarla, deja la nueva en public/images/ y actualiza esta ruta.
+ * Foto del banner: src/app/img/neon-motherboard-background.jpg, que angular.json publica en /img/.
+ * Para cambiarla, deja la nueva en src/app/img/ y actualiza esta ruta.
  */
-export const DEFAULT_HERO_IMAGE = '/images/hero-motherboard.jpg';
+export const DEFAULT_HERO_IMAGE = '/img/neon-motherboard-background.jpg';
 
 /** Portada de la tienda: banner de extremo a extremo con foto de fondo. Presentacional. */
 @Component({
