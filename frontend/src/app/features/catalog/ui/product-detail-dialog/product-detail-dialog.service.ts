@@ -12,8 +12,8 @@ export class ProductDetailDialog {
   open(product: Product): Observable<ProductDetailResult> {
     return this.dialog.open<ProductDetailDialogComponent, ProductDetailData, ProductDetailResult>(ProductDetailDialogComponent, {
       data: { product },
-      // tema-oscuro: el diálogo usa la paleta azul de las tarjetas.
-      panelClass: ['product-detail-panel', 'tema-oscuro'],
+      // Paleta clara, como las tarjetas del catálogo.
+      panelClass: ['product-detail-panel'],
       width: '880px',
       maxWidth: 'calc(100vw - 2rem)',
       autoFocus: 'dialog'

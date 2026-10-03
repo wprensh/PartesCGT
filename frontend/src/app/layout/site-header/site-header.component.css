@@ -9,8 +9,11 @@
                background: rgba(8, 21, 48, .88); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
 .bar { display: flex; align-items: center; gap: 1.25rem; height: 60px; }
 
-.brand { font: 700 1.25rem var(--display); color: #fff; text-decoration: none; letter-spacing: .04em; }
-.brand span { color: var(--muted); margin-left: .15rem; }
+/* Logo «prens● / TECNOLOGÍA». El punto dorado es el LED de encendido de la marca. */
+.brand { display: flex; flex-direction: column; gap: 4px; line-height: 1; color: #fff; text-decoration: none; }
+.brand-word { display: flex; align-items: flex-end; gap: 3px; font: 800 28px/.8 var(--display); letter-spacing: -.06em; }
+.brand-word i { width: 7px; height: 7px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 10px rgba(245, 197, 66, .6); margin-bottom: 1px; }
+.brand-sub { font: 500 8px var(--mono); letter-spacing: .3em; color: var(--muted); }
 
 .main-nav { display: flex; align-items: center; gap: .5rem; }
 .nav-link { color: #fff; text-decoration: none; font-weight: 600; display: flex; gap: .4rem; align-items: center; }

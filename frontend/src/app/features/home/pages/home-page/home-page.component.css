@@ -1,3 +1,5 @@
 .block { margin-top: 2.5rem; scroll-margin-top: 80px; }
 /* Alto mínimo para que el salto a #catalogo lo deje arriba aunque la categoría tenga un solo producto. */
 .catalog { min-height: calc(100vh - 76px); }
+/* Franja de color detrás de los kits para separarlos del catálogo. */
+#kits { background: var(--band); border-radius: 28px; padding: 2rem clamp(1rem, 3vw, 2rem); }

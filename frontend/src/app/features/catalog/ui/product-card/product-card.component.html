@@ -48,14 +48,14 @@
     </div>
 
     <div class="actions">
-      <span class="tooltip" data-tooltip="Ver">
+      <span class="tooltip" data-tooltip="Ver detalle">
         <button type="button" class="btn btn-ghost icon-btn" (click)="openDetail()" aria-haspopup="dialog"
                 [attr.aria-label]="'Ver detalle: ' + p.name">
           <app-icon name="visibility" />
         </button>
       </span>
       <!-- El tooltip va en un contenedor porque un botón deshabilitado no recibe eventos del mouse. -->
-      <span class="tooltip" [attr.data-tooltip]="stock() === 'out' ? 'Agotado' : 'Agregar'">
+      <span class="tooltip" [attr.data-tooltip]="stock() === 'out' ? 'Agotado' : 'Agregar al carrito'">
         <button class="btn icon-btn" (click)="add.emit(p)" [disabled]="stock() === 'out'"
                 [attr.aria-label]="(stock() === 'out' ? 'Agotado: ' : 'Agregar al carrito: ') + p.name">
           <app-icon name="add_shopping_cart" />

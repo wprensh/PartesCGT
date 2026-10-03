@@ -2,7 +2,10 @@
    La página usa la paleta CLARA; las piezas azules (header, hero, tarjetas, pie…)
    redefinen las variables a la paleta OSCURA en el bloque .tema-oscuro de abajo. */
 :root {
-  --bg: #e8edf5;        /* fondo de página: gris azulado claro */
+  --bg: #f3f6fb;        /* fondo de página: blanco azulado */
+  --band: #e8edf5;      /* franja que separa secciones (Kits) */
+  --card-line: #dbe2ee; /* borde de las tarjetas blancas */
+  --chip: #eef2f8;      /* etiquetas de especificaciones */
   --deep: #081530;
   --surface: #ffffff;   /* paneles claros (menú de categorías, diálogos) */
   --surface-2: #d3dbea;
@@ -26,7 +29,7 @@
 }
 
 /* Piezas azul nocturno (texto blanco). Añade aquí cualquier clase nueva que deba ir en azul. */
-.tema-oscuro, .top, .hero, .tag, .kit, .site-foot, .lines, .checkout, .launcher, .panel {
+.tema-oscuro, .top, .hero, .kit, .site-foot, .lines, .checkout, .launcher, .panel {
   --bg: #172b55;
   --surface: #0b1a3a;
   --surface-2: #172b55;
@@ -44,7 +47,7 @@
   --danger: #ff9b93;
   color: var(--ink);
 }
-.hero, .tag, .kit, .lines, .checkout { box-shadow: var(--shadow); border-color: var(--surface) !important; }
+.hero, .kit, .lines, .checkout { box-shadow: var(--shadow); border-color: var(--surface) !important; }
 
 * { box-sizing: border-box; }
 html, body { margin: 0; }
@@ -162,9 +165,9 @@ button { cursor: pointer; }
   --mat-icon-button-state-layer-color: var(--ink);
 }
 .table.mat-mdc-table tr.mat-mdc-row:hover { background: var(--tint-2); }
-/* MatDialog del detalle de producto (panelClass). Lleva también .tema-oscuro: azul como las tarjetas. */
+/* MatDialog del detalle de producto (panelClass). Blanco, como las tarjetas del catálogo. */
 .product-detail-panel {
-  --mdc-dialog-container-color: var(--surface);
+  --mdc-dialog-container-color: #fff;
   --mdc-dialog-container-shape: 20px;
   --mdc-dialog-subhead-color: var(--ink);
   --mdc-dialog-supporting-text-color: var(--ink);

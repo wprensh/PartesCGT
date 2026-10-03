@@ -1,8 +1,10 @@
-/* Tarjeta: superficie azul, borde fino, esquinas redondeadas */
-.tag { background: var(--surface); border: 1px solid var(--line);
+/* Tarjeta blanca sobre el fondo claro: borde fino y sombra suave. */
+.tag { background: #fff; color: var(--ink); border: 1px solid var(--card-line);
+       box-shadow: 0 1px 2px rgba(11, 26, 58, .06), 0 6px 18px rgba(11, 26, 58, .06);
        border-radius: 20px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .55rem; height: 100%;
        transition: border-color .15s, transform .15s; }
-.tag:hover { border-color: var(--line-2); transform: translateY(-2px); }
+.tag:hover { border-color: var(--ink); transform: translateY(-2px); }
+.code-tag { background: var(--ink); color: #fff; border-color: var(--ink); }
 
 /* Foto: fondo blanco (la mayoría de fotos de producto vienen sobre blanco) y proporción fija para que
    la cuadrícula no salte mientras cargan. */
@@ -13,7 +15,7 @@
 .media.empty { background: var(--surface-2); border: 1px dashed var(--line-2); }
 .placeholder { font: 500 1.75rem var(--mono); letter-spacing: .12em; color: var(--muted); }
 
-header { display: flex; align-items: center; gap: .5rem; font-size: .85rem; color: var(--muted); }
+header { display: flex; align-items: center; gap: .5rem; font-size: .85rem; color: #52617f; }
 .cat { flex: 1; }
 .sku { font-family: var(--mono); font-size: .75rem; }
 
@@ -24,14 +26,15 @@ h3 { font-size: 1.15rem; }
 .rating b { color: var(--ink); }
 
 .specs { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: .3rem; }
-.specs li { font: 500 .74rem var(--mono); background: var(--bg); border: 1px solid var(--line); border-radius: 999px;
+.specs li { font: 500 .74rem var(--mono); background: var(--chip); border: 1px solid var(--card-line); border-radius: 999px;
             padding: .15rem .55rem; color: var(--ink); }
 .description { margin: 0; color: var(--muted); font-size: .95rem; flex: 1; }
 
 footer { display: flex; justify-content: space-between; align-items: flex-end; gap: .75rem; margin-top: auto;
-         padding-top: .6rem; border-top: 1px solid var(--line); }
+         padding-top: .6rem; border-top: 1px solid #e3e8f1; }
 .actions { display: flex; gap: .4rem; flex-shrink: 0; }
-.actions .btn-ghost { color: var(--ink); }
+.actions .btn-ghost { color: var(--ink); background: #fff; border: 1.5px solid var(--ink); }
+.actions .btn-ghost:hover { background: var(--chip); }
 .price { display: block; font: 600 1.3rem var(--display); letter-spacing: -.02em; }
 .stock { font-size: .82rem; font-weight: 500; color: var(--muted); }
 .stock.low { color: var(--warn); }
